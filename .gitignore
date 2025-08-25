@@ -1,0 +1,448 @@
+# Docker-Enabled Kernel Build - .gitignore
+
+# =============================================================================
+# Build Artifacts and Output Files
+# =============================================================================
+
+# Kernel build outputs
+kernel_output/
+*.img
+*.gz
+*.dtb
+*.dtbo
+Image
+Image.gz
+zImage
+vmlinux
+System.map
+Module.symvers
+modules.builtin
+modules.order
+
+# Compiled object files
+*.o
+*.ko
+*.mod.c
+*.mod
+*.a
+*.so
+*.dylib
+
+# Build directories
+build/
+out/
+obj/
+.tmp_versions/
+
+# =============================================================================
+# Kernel Source and Configuration
+# =============================================================================
+
+# Kernel configuration files (keep templates, ignore generated)
+.config
+.config.old
+.config.cmd
+autoconf.h
+include/config/
+include/generated/
+arch/*/include/generated/
+
+# Kernel build system files
+scripts/basic/fixdep
+scripts/basic/bin2c
+scripts/kconfig/conf
+scripts/kconfig/mconf
+scripts/kconfig/nconf
+scripts/kconfig/qconf
+scripts/kconfig/gconf
+scripts/kconfig/zconf.tab.c
+scripts/kconfig/zconf.lex.c
+scripts/kconfig/zconf.hash.c
+
+# Android kernel build configs (keep templates)
+build.config.*
+!build.config.common
+!build.config.aarch64
+!build.config.x86_64
+
+# =============================================================================
+# Android NDK and Toolchain
+# =============================================================================
+
+# Android NDK (if downloaded locally)
+android-ndk-*/
+ndk/
+toolchain/
+
+# Cross-compilation toolchain
+aarch64-linux-android-*/
+arm-linux-androideabi-*/
+
+# =============================================================================
+# Python and Build Scripts
+# =============================================================================
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Python virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Python distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# =============================================================================
+# Logs and Reports
+# =============================================================================
+
+# Build logs
+*.log
+build.log
+kernel_build.log
+compilation.log
+
+# Setup and validation reports
+setup_report.txt
+validation_report.txt
+build_report.json
+system_health_report.json
+
+# Log directories
+logs/
+kernel_build/logs/
+
+# =============================================================================
+# Backup and Temporary Files
+# =============================================================================
+
+# Configuration backups
+*.backup
+*_backup_*
+*.bak
+*.orig
+
+# Temporary files
+*.tmp
+*.temp
+*~
+.#*
+#*#
+
+# Swap files
+*.swp
+*.swo
+.*.swp
+.*.swo
+
+# =============================================================================
+# IDE and Editor Files
+# =============================================================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA / PyCharm
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# =============================================================================
+# macOS Specific
+# =============================================================================
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Thumbnails
+Thumbs.db
+ehthumbs.db
+
+# macOS Finder
+.Spotlight-V100
+.Trashes
+.fseventsd
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# =============================================================================
+# Linux Specific
+# =============================================================================
+
+# Linux temporary files
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# Environment and Configuration
+# =============================================================================
+
+# Environment setup scripts (keep templates)
+setup_cross_compile_*.sh
+environment_config.json
+
+# Local configuration overrides
+local_config.json
+.env
+.env.local
+
+# SSH keys and certificates
+*.pem
+*.key
+*.crt
+*.p12
+id_rsa*
+id_dsa*
+id_ecdsa*
+id_ed25519*
+
+# =============================================================================
+# Docker and Container Files
+# =============================================================================
+
+# Docker build context
+.dockerignore
+Dockerfile.local
+docker-compose.override.yml
+
+# Container runtime files
+.container_id
+container_logs/
+
+# CRIU (Checkpoint/Restore) binaries and libraries
+criu/criu
+criu/criu-static
+criu/iptables
+criu/ld-musl-*.so.*
+criu/lib*.so.*
+
+# Migration tools
+migration/tar
+migration/build-tar-static.sh
+
+# =============================================================================
+# Android Specific
+# =============================================================================
+
+# Android build outputs
+*.apk
+*.ap_
+*.dex
+*.class
+
+# Android Studio
+local.properties
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+
+# Android NDK
+ndk-build.cmd
+Application.mk
+Android.mk.local
+
+# Android kernel build files
+Androidbp
+AndroidKernel.mk
+Android.mk
+gen_headers_*.bp
+kernel_headers.py
+disable_dbgfs.sh
+verity_dev_keys.x509
+
+# =============================================================================
+# Git and Version Control
+# =============================================================================
+
+# Git patches
+*.patch
+*.diff.local
+
+# Git merge conflicts
+*.orig
+*.rej
+
+# =============================================================================
+# Testing and Validation
+# =============================================================================
+
+# Test outputs
+test_results/
+test_reports/
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Validation artifacts
+validation_artifacts/
+test_kernels/
+test_images/
+
+# =============================================================================
+# Deployment and Device Files
+# =============================================================================
+
+# Device-specific files
+device_info.json
+fastboot_output.txt
+adb_logs/
+
+# Deployment backups
+boot_backup_*.img
+recovery_backup_*.img
+system_backup_*.img
+
+# Flash scripts (device-specific)
+flash_device_*.sh
+unlock_bootloader_*.sh
+
+# =============================================================================
+# Documentation Build
+# =============================================================================
+
+# Sphinx documentation
+docs/_build/
+docs/build/
+.doctrees/
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.lot
+*.out
+*.toc
+*.synctex.gz
+
+# =============================================================================
+# Monitoring and Diagnostics
+# =============================================================================
+
+# System monitoring outputs
+system_stats.json
+performance_logs/
+memory_usage.log
+cpu_usage.log
+
+# Diagnostic dumps
+crash_dumps/
+core_dumps/
+kernel_dumps/
+
+# =============================================================================
+# Custom Project Files
+# =============================================================================
+
+# Project-specific temporary files
+TODO.local
+NOTES.local
+scratch/
+experiments/
+
+# Local development overrides
+*.local
+*.dev
+*.debug
+
+# Benchmark and performance data
+benchmarks/
+performance_data/
+profiling_results/
+
+# Setup and environment scripts (generated)
+setup_cross_compile_*.sh
+setup_env_*.sh
+
+# Storage and monitoring logs
+storage_setup.log
+monitoring_dashboard/dashboard_report_*.json
+
+# Diagnostic reports directory contents
+diagnostic_reports/*
+!diagnostic_reports/.gitkeep
+
+# =============================================================================
+# Archive and Compressed Files
+# =============================================================================
+
+# Archives (unless specifically needed)
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tgz
+*.zip
+*.rar
+*.7z
+*.gz
+*.bz2
+*.xz
+
+# =============================================================================
+# End of .gitignore
+# =============================================================================
+
+# Note: This .gitignore is designed for the Docker-enabled Android kernel
+# build project. It excludes build artifacts, temporary files, and sensitive
+# data while preserving source code, configuration templates, and documentation.
+#
+# To add project-specific exclusions, create a .gitignore.local file
+# or add entries to the "Custom Project Files" section above.

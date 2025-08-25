@@ -1,0 +1,20 @@
+{
+  "target_device": "raphael",
+  "arch": "arm64",
+  "cross_compile": "aarch64-linux-android-",
+  "kernel_source_dir": "kernel",
+  "output_dir": "out",
+  "defconfig": "raphael_defconfig",
+  "make_jobs": 8,
+  "compiler_flags": [
+    "-O2",
+    "-pipe"
+  ],
+  "patches": [
+    "files/kernel.diff",
+    "files/aosp.diff"
+  ],
+  "docker_binaries_dir": "docker",
+  "criu_binaries_dir": "criu",
+  "migration_tools_dir": "migration"
+}

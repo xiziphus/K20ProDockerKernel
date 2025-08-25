@@ -1,0 +1,71 @@
+{
+  "device_profiles": {
+    "raphael": {
+      "codename": "raphael",
+      "model": "Redmi K20 Pro",
+      "manufacturer": "Xiaomi",
+      "fastboot_id": "raphael",
+      "partitions": {
+        "boot": "boot",
+        "recovery": "recovery",
+        "dtbo": "dtbo"
+      },
+      "supported_android_versions": ["10", "11", "12"],
+      "kernel_requirements": {
+        "min_size_mb": 5,
+        "max_size_mb": 50,
+        "expected_format": "android_boot_image"
+      }
+    },
+    "raphaelin": {
+      "codename": "raphaelin",
+      "model": "Redmi K20 Pro (India)",
+      "manufacturer": "Xiaomi",
+      "fastboot_id": "raphaelin",
+      "partitions": {
+        "boot": "boot",
+        "recovery": "recovery",
+        "dtbo": "dtbo"
+      },
+      "supported_android_versions": ["10", "11", "12"],
+      "kernel_requirements": {
+        "min_size_mb": 5,
+        "max_size_mb": 50,
+        "expected_format": "android_boot_image"
+      }
+    }
+  },
+  "deployment_settings": {
+    "default_timeout": 120,
+    "boot_wait_timeout": 180,
+    "validation_timeout": 60,
+    "backup_retention_days": 30,
+    "auto_reboot": true,
+    "validate_after_flash": true
+  },
+  "docker_validation": {
+    "required_features": [
+      "/proc/cgroups",
+      "/sys/fs/cgroup",
+      "/proc/sys/kernel/ns_last_pid"
+    ],
+    "optional_features": [
+      "/sys/fs/cgroup/memory",
+      "/sys/fs/cgroup/cpu",
+      "/sys/fs/cgroup/cpuset",
+      "/sys/fs/cgroup/devices"
+    ],
+    "kernel_config_checks": [
+      "CONFIG_NAMESPACES",
+      "CONFIG_CGROUPS",
+      "CONFIG_OVERLAY_FS"
+    ]
+  },
+  "safety_checks": {
+    "require_backup": true,
+    "confirm_device_compatibility": true,
+    "validate_kernel_image": true,
+    "check_battery_level": false,
+    "min_battery_percentage": 50
+  }
+}

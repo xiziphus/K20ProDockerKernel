@@ -1,0 +1,22 @@
+{
+  "project_root": "/Users/prateeksingh/Documents/PS/geminicli/dockerkernel/Android-Container",
+  "kernel_build_root": "/Users/prateeksingh/Documents/PS/geminicli/dockerkernel/Android-Container/kernel_build",
+  "python_version": "3.13.7",
+  "system": "Darwin",
+  "architecture": "x86_64",
+  "setup_timestamp": "Tue Aug 26 01:15:08 IST 2025",
+  "dependencies": {
+    "build_tools": {
+      "python": true,
+      "git": true,
+      "make": true,
+      "gcc": true,
+      "adb": true,
+      "fastboot": true
+    },
+    "android_tools": {
+      "android_ndk": true,
+      "aosp_source": false
+    }
+  }
+}

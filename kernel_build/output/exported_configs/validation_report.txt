@@ -1,0 +1,35 @@
+=== Kernel Configuration Validation Report ===
+
+ERRORS (8):
+  ❌ CONFIG_UTS_NS: Required Docker option missing or incorrect
+     Expected: y, Got: not set
+  ❌ CONFIG_IPC_NS: Required Docker option missing or incorrect
+     Expected: y, Got: not set
+  ❌ CONFIG_PID_NS: Required Docker option missing or incorrect
+     Expected: y, Got: not set
+  ❌ CONFIG_NET_NS: Required Docker option missing or incorrect
+     Expected: y, Got: not set
+  ❌ CONFIG_NETFILTER_ADVANCED: Required Docker option missing or incorrect
+     Expected: y, Got: not set
+  ❌ CONFIG_SECCOMP_FILTER: Required Docker option missing or incorrect
+     Expected: y, Got: not set
+  ❌ CONFIG_DEVPTS_MULTIPLE_INSTANCES: Required Docker option missing or incorrect
+     Expected: y, Got: not set
+  ❌ NAMESPACE_SUPPORT: Missing namespace support: CONFIG_UTS_NS, CONFIG_IPC_NS, CONFIG_PID_NS, CONFIG_NET_NS
+
+WARNINGS (2):
+  ⚠️  CONFIG_MEMCG_SWAP_ENABLED: Recommended Docker option missing or incorrect
+     Expected: y, Got: not set
+  ⚠️  CONFIG_IPVLAN: Recommended Docker option missing or incorrect
+     Expected: y, Got: not set
+
+INFO (1):
+  ℹ️  CONFIG_CPUSETS: Cpuset support enabled - ensure cpuset prefix is restored in kernel/cgroup/cpuset.c
+
+❌ Critical requirements missing - kernel will not support Docker
+
+==================================================
+
+=== Cgroup Configuration Validation Report ===
+
+✅ Cgroup configuration is valid for Docker!

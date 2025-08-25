@@ -1,0 +1,10 @@
+2025-08-25 19:04:02,486 - __main__ - INFO - Starting storage setup for Docker-enabled kernel
+2025-08-25 19:04:02,487 - __main__ - INFO - Validating storage setup...
+2025-08-25 19:04:02,493 - storage.overlay_manager - ERROR - Failed to verify kernel support: [Errno 2] No such file or directory: 'modprobe'
+2025-08-25 19:04:02,494 - storage.overlay_manager - ERROR - Validation failed: [Errno 2] No such file or directory: '/tmp/test-docker'
+2025-08-25 19:04:02,495 - storage.volume_manager - ERROR - Validation failed: [Errno 2] No such file or directory: '/tmp/test-docker/volumes'
+2025-08-25 19:04:09,782 - __main__ - INFO - Starting storage setup for Docker-enabled kernel
+2025-08-25 19:04:09,782 - __main__ - INFO - Setting up storage systems...
+2025-08-25 19:04:09,783 - storage.overlay_manager - INFO - Setting up overlay filesystem for Docker
+2025-08-25 19:04:09,788 - storage.overlay_manager - ERROR - Failed to verify kernel support: [Errno 2] No such file or directory: 'modprobe'
+2025-08-25 19:04:09,789 - __main__ - ERROR - Overlay filesystem setup failed
