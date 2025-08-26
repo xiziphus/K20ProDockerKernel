@@ -1,0 +1,51 @@
+{
+  "deployment_info": {
+    "created": "2025-08-26T17:32:43.990022",
+    "target_device": "raphael",
+    "kernel_version": "unknown",
+    "build_type": "docker-enabled"
+  },
+  "artifacts": {
+    "kernel_image": {
+      "path": "Image.gz",
+      "size": 8388608,
+      "hash": "2daeb1f36095b44b318410b3f4e8b5d989dcc7bb023d1426c492dab0a3053e74"
+    },
+    "device_tree": {
+      "path": "sm8150-raphael.dtb",
+      "size": 65536,
+      "hash": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31"
+    },
+    "config": {
+      "path": "docker_raphael_defconfig",
+      "size": 18893,
+      "hash": "1fd33eb709c6be4d1130864013909169328677dd5abb54fa04a951110c582de7"
+    }
+  },
+  "signatures": {
+    "kernel": {
+      "algorithm": "sha256",
+      "signature": "2daeb1f36095b44b318410b3f4e8b5d989dcc7bb023d1426c492dab0a3053e74",
+      "timestamp": "2025-08-26T17:32:43.989256"
+    },
+    "dtb": {
+      "algorithm": "sha256",
+      "signature": "de2f256064a0af797747c2b97505dc0b9f3df0de4f489eac731c23ae9ca9cc31",
+      "timestamp": "2025-08-26T17:32:43.989980"
+    }
+  },
+  "installation": {
+    "method": "fastboot",
+    "requirements": [
+      "Unlocked bootloader",
+      "Fastboot tools installed",
+      "Device in fastboot mode"
+    ],
+    "steps": [
+      "Boot device into fastboot mode",
+      "Run flash_kernel.sh (Linux/macOS) or flash_kernel.bat (Windows)",
+      "Wait for device to reboot",
+      "Verify kernel version with 'adb shell uname -a'"
+    ]
+  }
+}

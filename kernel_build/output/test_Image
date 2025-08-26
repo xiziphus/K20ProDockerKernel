@@ -1,0 +1,3 @@
+# This is a mock kernel image for testing validation
+# In a real build, this would be a binary kernel image
+# Size: approximately 10MB for realistic testing

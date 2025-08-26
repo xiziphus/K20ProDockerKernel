@@ -559,106 +559,52 @@ class NetworkDebugger:
     def print_summary(self, report: Dict):
         """Print human-readable network diagnostic summary"""
         print("\n" + "="*60)
-        print("🌐 NETWORK DIAGNOSTICS SUMMARY")
-        print("="*60)
-        
-        summary = report["summary"]
-        print(f"Total Issues: {summary['total_issues']}")
-        print(f"Critical Issues: {summary['critical_issues']}")
-        print(f"Network Interfaces: {summary['network_interfaces']}")
-        print(f"Docker Networks: {summary['docker_networks']}")
-        print(f"Containers Tested: {summary['containers_tested']}")
-        
-        # Network interfaces
-        print(f"\n🔌 NETWORK INTERFACES")
-        interfaces = report["network_interfaces"]
-        docker_interfaces = len(interfaces.get("docker_interfaces", {}))
-        bridge_interfaces = len(interfaces.get("bridge_interfaces", {}))
-        print(f"Docker Interfaces: {docker_interfaces}")
-        print(f"Bridge Interfaces: {bridge_interfaces}")
-        
-        # Docker networks
-        print(f"\n🐳 DOCKER NETWORKS")
-        networks = report["docker_networks"]
-        network_drivers = networks.get("network_drivers", {})
-        if network_drivers:
-            for driver, count in network_drivers.items():
-                print(f"  {driver}: {count} networks")
-        
-        # Connectivity tests
-        print(f"\n🔗 CONNECTIVITY TESTS")
-        connectivity = report["connectivity_tests"]
-        tests = connectivity.get("tests", {})
-        
-        if tests:
-            successful_internet = sum(1 for t in tests.values() if t.get("internet_connectivity"))
-            successful_dns = sum(1 for t in tests.values() if t.get("dns_resolution"))
-            print(f"Internet Connectivity: {successful_internet}/{len(tests)} containers")
-            print(f"DNS Resolution: {successful_dns}/{len(tests)} containers")
-            
-            # Container-to-container connectivity
-            connectivity_matrix = connectivity.get("connectivity_matrix", {})
-            if connectivity_matrix:
-                successful_c2c = sum(1 for c in connectivity_matrix.values() if c.get("success"))
-                print(f"Container-to-Container: {successful_c2c}/{len(connectivity_matrix)} tests passed")
-        
-        # All issues
-        all_issues = []
-        for section in ["network_interfaces", "docker_networks", "iptables_rules", "connectivity_tests"]:
-            issues = report[section].get("issues", [])
-            all_issues.extend([(section, issue) for issue in issues])
-        
-        if all_issues:
-            print(f"\n⚠️  NETWORK ISSUES ({len(all_issues)})")
-            for section, issue in all_issues[:10]:  # Show first 10
-                print(f"  • [{section}] {issue}")
-            
-            if len(all_issues) > 10:
-                print(f"  ... and {len(all_issues) - 10} more issues")
-        else:
-            print(f"\n✅ No network issues found!")
-        
-        print("="*60)
 
 def main():
-    """Main network debugging function"""
+    """Main function for command-line usage"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="Network Debugging Utilities")
-    parser.add_argument("--container", "-c", help="Test specific container connectivity")
-    parser.add_argument("--output", "-o", help="Output report file")
-    parser.add_argument("--quiet", "-q", action="store_true", help="Quiet mode - minimal output")
-    parser.add_argument("--check", choices=["interfaces", "networks", "iptables", "connectivity"], 
-                       help="Run specific network check only")
+    parser = argparse.ArgumentParser(description="Network Debugging Tool")
+    parser.add_argument("--container", type=str, help="Test connectivity for specific container")
+    parser.add_argument("--output", type=str, help="Output filename for report")
+    parser.add_argument("--quiet", action="store_true", help="Suppress output")
+    parser.add_argument("--interfaces", action="store_true", help="Check network interfaces only")
+    parser.add_argument("--docker-networks", action="store_true", help="Check Docker networks only")
+    parser.add_argument("--iptables", action="store_true", help="Check iptables rules only")
+    parser.add_argument("--connectivity", action="store_true", help="Test container connectivity only")
     
     args = parser.parse_args()
     
     debugger = NetworkDebugger()
     
-    if args.check:
-        # Run specific check
-        if args.check == "interfaces":
-            result = debugger.check_network_interfaces()
-        elif args.check == "networks":
-            result = debugger.check_docker_networks()
-        elif args.check == "iptables":
-            result = debugger.check_iptables_rules()
-        elif args.check == "connectivity":
-            result = debugger.test_container_connectivity(args.container)
-        
+    if args.interfaces:
+        print("🔍 Checking network interfaces...")
+        report = debugger.check_network_interfaces()
         if not args.quiet:
-            print(json.dumps(result, indent=2))
+            print(json.dumps(report, indent=2))
+    elif args.docker_networks:
+        print("🔍 Checking Docker networks...")
+        report = debugger.check_docker_networks()
+        if not args.quiet:
+            print(json.dumps(report, indent=2))
+    elif args.iptables:
+        print("🔍 Checking iptables rules...")
+        report = debugger.check_iptables_rules()
+        if not args.quiet:
+            print(json.dumps(report, indent=2))
+    elif args.connectivity:
+        print("🔍 Testing container connectivity...")
+        report = debugger.test_container_connectivity(args.container)
+        if not args.quiet:
+            print(json.dumps(report, indent=2))
     else:
-        # Run full network diagnostics
+        print("🔍 Running comprehensive network diagnostics...")
         report = debugger.diagnose_network_issues()
         
         if not args.quiet:
             debugger.print_summary(report)
         
-        if args.output:
-            debugger.save_report(report, args.output)
-        else:
-            debugger.save_report(report)
+        debugger.save_report(report, args.output)
 
 if __name__ == "__main__":
     main()

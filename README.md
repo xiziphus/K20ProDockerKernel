@@ -45,6 +45,34 @@ This project enables running Linux containers (Docker, Podman, etc.) natively on
 
 <img src="picture/5.png" width = "475" height = "289"  />
 
+## 🚀 Quick Start
+
+### Ubuntu/Debian Users (Recommended)
+```bash
+# Complete automated setup and build
+./setup_and_build_ubuntu.sh
+
+# Or if dependencies are already installed
+./build_kernel_ubuntu.sh
+```
+
+### Other Linux Distributions
+```bash
+# Manual build (install dependencies first)
+./build_docker_kernel.sh
+```
+
+### macOS Users
+```bash
+# Install dependencies first
+brew install binutils aarch64-elf-binutils android-ndk
+
+# Then build
+./build_docker_kernel.sh
+```
+
+📖 **Detailed guides**: [Ubuntu Build Guide](UBUNTU_BUILD_GUIDE.md) | [macOS Guide](INTEL_MAC_KERNEL_BUILD.md)
+
 ## Project Directory
 
 ```
@@ -161,6 +189,13 @@ python kernel_build/scripts/patch_tool.py verify files/kernel.diff
 - **Build system integration** tests
 - **Rollback functionality** tests
 
+### ✅ Debugging and Troubleshooting Tools
+- **Comprehensive log analysis** for kernel and Docker issues
+- **Network debugging utilities** for container connectivity
+- **Storage debugging tools** for overlay filesystem issues
+- **System health monitoring** and diagnostics
+- **Automated issue detection** and recommendations
+
 ## 📋 Build Process Steps
 
 ### Traditional Manual Process:
@@ -178,6 +213,43 @@ python kernel_build/scripts/patch_tool.py verify files/kernel.diff
 4. **Install Docker binaries** from the `docker/` directory
 5. **Configure runtime environment** using `files/dockerd.sh`
 6. **Test container functionality**
+
+## 🔍 Debugging and Troubleshooting
+
+### Comprehensive Diagnostics
+```bash
+# Run complete system diagnostics
+python kernel_build/scripts/debug_toolkit.py
+
+# Analyze system logs for issues
+python kernel_build/scripts/log_analyzer.py --hours 24
+
+# Debug network connectivity
+python kernel_build/scripts/network_debugger.py
+
+# Check storage and overlay filesystem
+python kernel_build/scripts/storage_debugger.py
+```
+
+### Quick Health Check
+```bash
+# System monitoring and health check
+python kernel_build/scripts/system_monitor.py --health-check
+
+# Docker daemon status and diagnostics
+python kernel_build/scripts/docker_health_monitor.py
+
+# Container runtime diagnostics
+python kernel_build/scripts/container_diagnostics.py
+```
+
+### Log Analysis Features
+- **Automated error pattern detection** in system logs
+- **Kernel panic and error analysis**
+- **Docker daemon issue identification**
+- **Network connectivity problem diagnosis**
+- **Storage and filesystem error detection**
+- **Comprehensive reporting** with recommendations
 
 ## ⚠️ Important Notes
 

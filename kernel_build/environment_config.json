@@ -4,7 +4,7 @@
   "python_version": "3.13.7",
   "system": "Darwin",
   "architecture": "x86_64",
-  "setup_timestamp": "Tue Aug 26 01:15:08 IST 2025",
+  "setup_timestamp": "Tue Aug 26 02:36:14 IST 2025",
   "dependencies": {
     "build_tools": {
       "python": true,

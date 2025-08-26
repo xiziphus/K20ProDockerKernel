@@ -13,6 +13,18 @@ KERNEL_OUTPUT="kernel_output"
 ARCH="arm64"
 SUBARCH="arm64"
 
+# Detect OS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    OS="macOS"
+    echo "🍎 Detected macOS"
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    OS="Linux"
+    echo "🐧 Detected Linux"
+else
+    echo "❌ Unsupported OS: $OSTYPE"
+    exit 1
+fi
+
 # Check if kernel source exists
 if [ ! -d "$KERNEL_SOURCE" ]; then
     echo "❌ Kernel source not found at $KERNEL_SOURCE"
@@ -39,17 +51,91 @@ fi
 # Set Python explicitly for kernel build
 export PYTHON=$(which python3)
 
-# Check for cross-compiler
-if [ -n "$ANDROID_NDK_ROOT" ]; then
-    export CROSS_COMPILE="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-"
-    echo "✅ Using Android NDK cross-compiler"
-elif command -v aarch64-linux-gnu-gcc &> /dev/null; then
-    export CROSS_COMPILE="aarch64-linux-gnu-"
-    echo "✅ Using system cross-compiler"
-else
-    echo "⚠️  No cross-compiler found. Attempting native build..."
-    echo "   Install Android NDK or aarch64-linux-gnu-gcc for cross-compilation"
-fi
+echo ""
+echo "🔧 Checking build tools and binutils..."
+
+# Function to check binutils tools
+check_binutils() {
+    local missing_tools=()
+    local cross_prefix=""
+    
+    # Check for cross-compilation tools first
+    if [ -n "$ANDROID_NDK_ROOT" ]; then
+        if [[ "$OS" == "macOS" ]]; then
+            cross_prefix="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android29-"
+        else
+            cross_prefix="$ANDROID_NDK_ROOT/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-"
+        fi
+        
+        if command -v "${cross_prefix}clang" &> /dev/null; then
+            export CROSS_COMPILE="$cross_prefix"
+            export CC="${cross_prefix}clang"
+            echo "✅ Using Android NDK cross-compiler"
+        else
+            echo "⚠️  Android NDK found but cross-compiler not available"
+        fi
+    elif command -v aarch64-linux-gnu-gcc &> /dev/null; then
+        export CROSS_COMPILE="aarch64-linux-gnu-"
+        echo "✅ Using system cross-compiler (aarch64-linux-gnu)"
+    elif command -v aarch64-elf-gcc &> /dev/null; then
+        export CROSS_COMPILE="aarch64-elf-"
+        echo "✅ Using system cross-compiler (aarch64-elf)"
+    else
+        echo "⚠️  No cross-compiler found. Attempting native build..."
+        echo "   Install Android NDK, aarch64-linux-gnu-gcc, or aarch64-elf-gcc for cross-compilation"
+    fi
+    
+    # Check essential binutils tools
+    local tools_to_check=("objcopy" "objdump" "readelf" "nm" "strip")
+    
+    for tool in "${tools_to_check[@]}"; do
+        local found=false
+        
+        # Check cross-compiler version first
+        if [ -n "$CROSS_COMPILE" ] && command -v "${CROSS_COMPILE}${tool}" &> /dev/null; then
+            echo "✅ ${CROSS_COMPILE}${tool}: Available"
+            found=true
+        # Check native version
+        elif command -v "$tool" &> /dev/null; then
+            echo "✅ $tool: Available (native)"
+            found=true
+        # On macOS, check for GNU versions
+        elif [[ "$OS" == "macOS" ]] && command -v "g$tool" &> /dev/null; then
+            echo "✅ g$tool: Available (GNU version)"
+            found=true
+        fi
+        
+        if [[ "$found" == false ]]; then
+            echo "❌ $tool: Not found"
+            missing_tools+=("$tool")
+        fi
+    done
+    
+    # Check if we have the essential tools for kernel building
+    if [[ ${#missing_tools[@]} -gt 0 ]]; then
+        echo ""
+        echo "⚠️  Missing binutils tools: ${missing_tools[*]}"
+        echo "🔧 Installation suggestions:"
+        
+        if [[ "$OS" == "macOS" ]]; then
+            echo "   brew install binutils"
+            echo "   brew install aarch64-elf-binutils"
+            echo "   brew install android-ndk"
+        else
+            echo "   sudo apt-get install binutils binutils-aarch64-linux-gnu"
+            echo "   # or"
+            echo "   sudo dnf install binutils binutils-aarch64-linux-gnu"
+        fi
+        
+        echo ""
+        echo "⚠️  Continuing with available tools, but build may fail..."
+    else
+        echo "✅ All essential binutils tools are available"
+    fi
+}
+
+# Run binutils check
+check_binutils
 
 echo "📋 Build Configuration:"
 echo "   Kernel Source: $KERNEL_SOURCE"
@@ -118,10 +204,55 @@ echo "🔨 Building kernel..."
 # Clean previous builds
 make clean
 
+# Determine number of parallel jobs
+if [[ "$OS" == "macOS" ]]; then
+    JOBS=$(sysctl -n hw.ncpu)
+else
+    JOBS=$(nproc)
+fi
+
 # Build kernel
-echo "Building kernel image..."
-if ! make -j$(nproc) Image Image.gz dtbs; then
+echo "Building kernel image with $JOBS parallel jobs..."
+
+# Set additional environment variables for kernel build
+export KBUILD_BUILD_USER="docker-kernel-builder"
+export KBUILD_BUILD_HOST="build-system"
+export LOCALVERSION="-docker-enabled"
+
+# Export binutils tools if cross-compiling
+if [ -n "$CROSS_COMPILE" ]; then
+    export AR="${CROSS_COMPILE}ar"
+    export NM="${CROSS_COMPILE}nm"
+    export OBJCOPY="${CROSS_COMPILE}objcopy"
+    export OBJDUMP="${CROSS_COMPILE}objdump"
+    export READELF="${CROSS_COMPILE}readelf"
+    export STRIP="${CROSS_COMPILE}strip"
+    
+    # For Android NDK, we might need to use llvm tools
+    if [[ "$CROSS_COMPILE" == *"android"* ]]; then
+        # Android NDK uses LLVM tools
+        export AR="${CROSS_COMPILE}ar"
+        export NM="${CROSS_COMPILE}nm"
+        export OBJCOPY="${CROSS_COMPILE}objcopy"
+        export OBJDUMP="${CROSS_COMPILE}objdump"
+        export READELF="${CROSS_COMPILE}readelf"
+        export STRIP="${CROSS_COMPILE}strip"
+    fi
+fi
+
+# Build with verbose output for debugging
+if ! make -j$JOBS V=1 Image Image.gz dtbs; then
     echo "❌ Kernel build failed"
+    echo ""
+    echo "🔍 Troubleshooting tips:"
+    echo "   1. Check if all required tools are installed:"
+    echo "      ./check_binutils.sh"
+    echo "   2. Try building with single thread:"
+    echo "      make V=1 Image Image.gz dtbs"
+    echo "   3. Check kernel configuration:"
+    echo "      make menuconfig"
+    echo "   4. Clean and retry:"
+    echo "      make clean && make mrproper"
     exit 1
 fi
 
